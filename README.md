@@ -39,7 +39,6 @@ pip install -r requirements.txt
 1. Download Hotel-CIR from our release
 2. Extract to `data/hotels/`
 
-```
 
 ### Configuration
 Create a `config.yaml` file:
