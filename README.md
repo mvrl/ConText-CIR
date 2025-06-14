@@ -29,7 +29,7 @@ pip install -r requirements.txt
 
 ### LaSCo Dataset
 1. Download from [here](https://github.com/levymsn/LaSCo)
-2. PLace in `data/lasco/`
+2. Place in `data/lasco/`
 
 ### CIRR-Rewritten Dataset (Optional)
 1. Download rewritten captions from our release
