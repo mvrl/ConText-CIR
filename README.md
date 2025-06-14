@@ -28,7 +28,7 @@ pip install -r requirements.txt
 2. Extract to `data/cirr/`
 
 ### LaSCo Dataset
-1. Download from [here] (https://github.com/levymsn/LaSCo)
+1. Download from [here](https://github.com/levymsn/LaSCo)
 2. PLace in `data/lasco/`
 
 ### CIRR-Rewritten Dataset (Optional)
