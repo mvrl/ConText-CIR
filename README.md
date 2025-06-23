@@ -101,7 +101,7 @@ If you find this code useful for your research, please cite:
 @article{xing2025context,
   title={ConText-CIR: Learning from Concepts in Text for Composed Image Retrieval},
   author={Xing, Eric and Kolouju, Pranavi and Pless, Robert and Stylianou, Abby and Jacobs, Nathan},
-  journal={Computer Vision and Paattern Recognition},
+  journal={Computer Vision and Pattern Recognition},
   year={2025}
 }
 ```
