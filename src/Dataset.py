@@ -122,6 +122,213 @@ class CIRDataset(Dataset):
         return len(self.captions)
 
 
+class GalleryDataset(Dataset):
+    """Gallery dataset for evaluation — all candidate images for retrieval."""
+
+    def __init__(self, data_path: Union[str, os.PathLike], split: str,
+                 dataset: str, preprocess: callable, use_distractors: bool = True):
+        self.preprocess = preprocess
+        self.data_path = data_path
+        self.split = split
+        self.dataset = dataset
+
+        self.image_paths = []
+
+        if dataset in ['cirr', 'cirr_r']:
+            eval_split = 'test1' if split == 'test' else split
+            with open(os.path.join(data_path, 'image_splits', f'split.rc2.{eval_split}.json'), 'r') as f:
+                mapper = json.load(f)
+
+            if use_distractors:
+                # All images in the split are gallery candidates
+                self.image_paths = [
+                    os.path.join(data_path, 'img_raw', rel_path.strip('./'))
+                    for rel_path in mapper.values()
+                ]
+            else:
+                # Only include target images listed in the captions file
+                with open(os.path.join(data_path, 'captions', f'cap.rc2.{eval_split}.json'), 'r') as f:
+                    imgs_info = json.load(f)
+                seen: set = set()
+                for img_info in imgs_info:
+                    tgt = img_info.get('target_hard')
+                    if tgt and tgt not in seen:
+                        seen.add(tgt)
+                        self.image_paths.append(
+                            os.path.join(data_path, 'img_raw', mapper[tgt].strip('./'))
+                        )
+
+        elif dataset == 'hotels':
+            img_dir = 'train' if split == 'train' else 'val_test'
+            with open(os.path.join(data_path, 'captions', f'hotel_{split}_data.json'), 'r') as f:
+                imgs_info = json.load(f)
+            seen_paths: set = set()
+            for img_info in imgs_info:
+                for key in ['query_image', 'result_image']:
+                    raw = img_info.get(key)
+                    if not raw:
+                        continue
+                    img_path = os.path.join(
+                        data_path, 'images', img_dir, *raw.split('/')[-3:]
+                    )
+                    if img_path not in seen_paths:
+                        seen_paths.add(img_path)
+                        self.image_paths.append(img_path)
+
+        else:
+            raise ValueError(f"Dataset '{dataset}' not supported for GalleryDataset")
+
+        print(f"Gallery dataset initialized with {len(self.image_paths)} images")
+
+    def __getitem__(self, index) -> dict:
+        try:
+            img = Image.open(self.image_paths[index]).convert("RGB")
+            img = self.preprocess(img)
+            return {"image": img, "image_path": self.image_paths[index]}
+        except (FileNotFoundError, OSError) as e:
+            print(f"Error loading image at index {index}: {e}")
+            return None
+
+    def __len__(self) -> int:
+        return len(self.image_paths)
+
+
+class CIRRDataset(Dataset):
+    """CIRR dataset for classic (gallery) and relative (query) evaluation modes."""
+
+    def __init__(self, data_path: Union[str, os.PathLike], split: str,
+                 mode: Literal['classic', 'relative'], preprocess: callable):
+        self.preprocess = preprocess
+        self.data_path = data_path
+        self.split = split
+        self.mode = mode
+
+        # Load image-name → relative-path mapper
+        with open(os.path.join(data_path, 'image_splits', f'split.rc2.{split}.json'), 'r') as f:
+            self.mapper = json.load(f)
+
+        if mode == 'classic':
+            names, paths = zip(*[
+                (name, os.path.join(data_path, 'img_raw', rel_path.strip('./')))
+                for name, rel_path in self.mapper.items()
+            ]) if self.mapper else ([], [])
+            self.image_names: List[str] = list(names)
+            self.image_paths: List[str] = list(paths)
+        elif mode == 'relative':
+            with open(os.path.join(data_path, 'captions', f'cap.rc2.{split}.json'), 'r') as f:
+                self.annotations = json.load(f)
+        else:
+            raise ValueError(f"Mode '{mode}' not supported. Use 'classic' or 'relative'.")
+
+        print(f"CIRR {split} ({mode}) dataset initialized")
+
+    def __getitem__(self, index) -> dict:
+        if self.mode == 'classic':
+            try:
+                img = Image.open(self.image_paths[index]).convert("RGB")
+                img = self.preprocess(img)
+                return {"image": img, "image_name": self.image_names[index]}
+            except (FileNotFoundError, OSError) as e:
+                print(f"Error loading image at index {index}: {e}")
+                return None
+        else:  # relative
+            annotation = self.annotations[index]
+            ref_name = annotation['reference']
+            ref_path = os.path.join(
+                self.data_path, 'img_raw', self.mapper[ref_name].strip('./')
+            )
+            try:
+                ref_img = Image.open(ref_path).convert("RGB")
+                ref_img = self.preprocess(ref_img)
+            except (FileNotFoundError, OSError) as e:
+                print(f"Error loading reference image at index {index}: {e}")
+                ref_img = None
+
+            return {
+                "reference_image": ref_img,
+                "reference_name": ref_name,
+                "relative_caption": annotation['caption'],
+                "pair_id": annotation['img_set']['id'],
+                "group_members": annotation['img_set']['members'],
+            }
+
+    def __len__(self) -> int:
+        if self.mode == 'classic':
+            return len(self.image_names)
+        return len(self.annotations)
+
+
+class CIRCODataset(Dataset):
+    """CIRCO dataset for classic (gallery) and relative (query) evaluation modes.
+
+    Images are sourced from COCO 2017 unlabeled, expected at:
+        <dataset_path>/COCO2017_unlabeled/data/<000000xxxxxx>.jpg
+
+    Annotations are expected at:
+        <dataset_path>/annotations/<split>.json
+    """
+
+    # COCO image filename format: zero-padded 12-digit ID with .jpg extension
+    _COCO_IMG_FILENAME = '{:012d}.jpg'
+
+    def __init__(self, dataset_path: Union[str, os.PathLike], split: str,
+                 mode: Literal['classic', 'relative'], preprocess: callable):
+        self.preprocess = preprocess
+        self.dataset_path = dataset_path
+        self.split = split
+        self.mode = mode
+        self.img_dir = os.path.join(dataset_path, 'COCO2017_unlabeled', 'data')
+
+        if mode == 'classic':
+            img_info_path = os.path.join(
+                dataset_path, 'COCO2017_unlabeled', 'annotations',
+                'image_info_unlabeled2017.json'
+            )
+            with open(img_info_path, 'r') as f:
+                img_data = json.load(f)
+            self.images = img_data['images']  # list of {'id': int, 'file_name': str, ...}
+        elif mode == 'relative':
+            with open(os.path.join(dataset_path, 'annotations', f'{split}.json'), 'r') as f:
+                self.annotations = json.load(f)
+        else:
+            raise ValueError(f"Mode '{mode}' not supported. Use 'classic' or 'relative'.")
+
+        print(f"CIRCO {split} ({mode}) dataset initialized")
+
+    def __getitem__(self, index) -> dict:
+        if self.mode == 'classic':
+            img_info = self.images[index]
+            img_path = os.path.join(self.img_dir, img_info['file_name'])
+            try:
+                img = Image.open(img_path).convert("RGB")
+                img = self.preprocess(img)
+                return {"image": img, "image_name": img_info['file_name']}
+            except (FileNotFoundError, OSError) as e:
+                print(f"Error loading image at index {index}: {e}")
+                return None
+        else:  # relative
+            annotation = self.annotations[index]
+            ref_img_id = annotation['reference_img_id']
+            ref_img_path = os.path.join(self.img_dir, self._COCO_IMG_FILENAME.format(ref_img_id))
+            try:
+                ref_img = Image.open(ref_img_path).convert("RGB")
+                ref_img = self.preprocess(ref_img)
+            except (FileNotFoundError, OSError) as e:
+                print(f"Error loading reference image at index {index}: {e}")
+                ref_img = None
+
+            return {
+                "reference_image": ref_img,
+                "relative_caption": annotation['relative_caption'],
+                "query_id": annotation['id'],
+            }
+
+    def __len__(self) -> int:
+        if self.mode == 'classic':
+            return len(self.images)
+        return len(self.annotations)
+
+
 def collate_fn_with_nps(batch):
     """Custom collate function that handles variable-length noun phrases."""
     # Filter out None samples
