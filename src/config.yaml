@@ -1,0 +1,6 @@
+train_manifest: data/train_triplets.json
+image_root: data/images
+np_cache: data/nps.sqlite
+cirr_eval_path: data/cirr
+circo_eval_path: data/circo
+output: checkpoints
