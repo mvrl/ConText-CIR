@@ -1,4 +1,19 @@
-# ConText-CIR: Learning from Concepts in Text for Composed Image Retrieval
+<h1 align="center">ConText-CIR: Learning from Concepts in Text for Composed Image Retrieval</h1>
+
+<p align="center">
+  <a href="https://arxiv.org/abs/2505.20764"><img src="https://img.shields.io/badge/arXiv-2505.20764-b31b1b.svg" alt="arXiv"></a>
+  <a href="https://huggingface.co/papers/2505.20764"><img src="https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Paper-yellow" alt="Hugging Face Paper"></a>
+  <a href="https://ericx003.github.io/proj/context_cir/"><img src="https://img.shields.io/badge/Project-Page-blue" alt="Project Page"></a>
+  <a href="https://github.com/mvrl/ConText-CIR"><img src="https://img.shields.io/badge/Code-GitHub-black?logo=github" alt="Code"></a>
+</p>
+
+<p align="center">
+  <a href="https://arxiv.org/abs/2505.20764">Paper</a> |
+  <a href="https://ericx003.github.io/proj/context_cir/">Project Page</a> |
+  <a href="#-citation">Citation</a>
+</p>
+
+> **Figures:** overview figures, qualitative results and dataset examples are available on the [project page](https://ericx003.github.io/proj/context_cir/) and in the [paper](https://arxiv.org/abs/2505.20764).
 
 PyTorch implementation of **ConText-CIR** from the paper "ConText-CIR: Learning from Concepts in Text for Composed Image Retrieval"
 
