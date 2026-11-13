@@ -29,7 +29,7 @@ ConText-CIR is trained with a novel Text Concept-Consistency loss that encourage
 ### Setup
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/ConText-CIR.git
+git clone https://github.com/mvrl/ConText-CIR.git
 cd ConText-CIR
 
 # Install dependencies
