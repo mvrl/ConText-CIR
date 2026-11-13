@@ -15,7 +15,7 @@
 
 > **Figures:** overview figures, qualitative results and dataset examples are available on the [project page](https://ericx003.github.io/proj/context_cir/) and in the [paper](https://arxiv.org/abs/2505.20764).
 
-PyTorch implementation of **ConText-CIR** from the paper "ConText-CIR: Learning from Concepts in Text for Composed Image Retrieval"
+Official PyTorch implementation of **ConText-CIR** from the paper "ConText-CIR: Learning from Concepts in Text for Composed Image Retrieval"
 
 ConText-CIR is trained with a novel Text Concept-Consistency loss that encourages better alignment between noun phrases in text and their corresponding image regions.
 
