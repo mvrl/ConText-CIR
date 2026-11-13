@@ -54,6 +54,13 @@ pip install -r requirements.txt
 1. Download Hotel-CIR from our release
 2. Extract to `data/hotels/`
 
+> **Coming soon:** Hotel-CIR and CIRR-Rewritten are planned for release on the Hugging Face Hub. Once published, they can be fetched with the `datasets` library (replace the placeholder with the final repository id):
+> ```python
+> from datasets import load_dataset
+>
+> dataset = load_dataset("<hf-org-or-username>/<dataset-name>")
+> ```
+
 
 ### Configuration
 Create a `config.yaml` file:
