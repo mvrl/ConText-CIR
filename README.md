@@ -1,6 +1,26 @@
-# ConText-CIR: Learning from Concepts in Text for Composed Image Retrieval
+<h1 align="center">ConText-CIR: Learning from Concepts in Text for Composed Image Retrieval</h1>
 
-PyTorch implementation of **ConText-CIR** from the paper "ConText-CIR: Learning from Concepts in Text for Composed Image Retrieval"
+<p align="center">
+  <a href="https://arxiv.org/abs/2505.20764"><img src="https://img.shields.io/badge/arXiv-2505.20764-b31b1b.svg" alt="arXiv"></a>
+  <a href="https://huggingface.co/papers/2505.20764"><img src="https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Paper-yellow" alt="Hugging Face Paper"></a>
+  <a href="https://ericx003.github.io/proj/context_cir/"><img src="https://img.shields.io/badge/Project-Page-blue" alt="Project Page"></a>
+  <a href="https://github.com/mvrl/ConText-CIR"><img src="https://img.shields.io/badge/Code-GitHub-black?logo=github" alt="Code"></a>
+</p>
+
+<p align="center">
+  <a href="https://paperswithcode.co/api/v1/papers/2505.20764/leaderboard-badge-link?eval=40333"><img src="https://paperswithcode.co/api/v1/papers/2505.20764/leaderboard-badge.svg?eval=40333&live=1" alt="Papers with Code: #2 on CIRCO"></a>
+  <a href="https://paperswithcode.co/api/v1/papers/2505.20764/leaderboard-badge-link?eval=38670"><img src="https://paperswithcode.co/api/v1/papers/2505.20764/leaderboard-badge.svg?eval=38670&live=1" alt="Papers with Code: #2 on CIRR"></a>
+</p>
+
+<p align="center">
+  <a href="https://arxiv.org/abs/2505.20764">Paper</a> |
+  <a href="https://ericx003.github.io/proj/context_cir/">Project Page</a> |
+  <a href="#-citation">Citation</a>
+</p>
+
+> **Figures:** overview figures, qualitative results and dataset examples are available on the [project page](https://ericx003.github.io/proj/context_cir/) and in the [paper](https://arxiv.org/abs/2505.20764).
+
+Official PyTorch implementation of **ConText-CIR** from the paper "ConText-CIR: Learning from Concepts in Text for Composed Image Retrieval"
 
 ConText-CIR is trained with a novel Text Concept-Consistency loss that encourages better alignment between noun phrases in text and their corresponding image regions.
 
@@ -14,7 +34,7 @@ ConText-CIR is trained with a novel Text Concept-Consistency loss that encourage
 ### Setup
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/ConText-CIR.git
+git clone https://github.com/mvrl/ConText-CIR.git
 cd ConText-CIR
 
 # Install dependencies
@@ -38,6 +58,13 @@ pip install -r requirements.txt
 ### Hotel-CIR Dataset (Optional)
 1. Download Hotel-CIR from our release
 2. Extract to `data/hotels/`
+
+> **Coming soon:** Hotel-CIR and CIRR-Rewritten are planned for release on the Hugging Face Hub. Once published, they can be fetched with the `datasets` library (replace the placeholder with the final repository id):
+> ```python
+> from datasets import load_dataset
+>
+> dataset = load_dataset("<hf-org-or-username>/<dataset-name>")
+> ```
 
 
 ### Configuration
