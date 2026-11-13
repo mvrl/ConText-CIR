@@ -8,6 +8,11 @@
 </p>
 
 <p align="center">
+  <a href="https://paperswithcode.co/api/v1/papers/2505.20764/leaderboard-badge-link?eval=40333"><img src="https://paperswithcode.co/api/v1/papers/2505.20764/leaderboard-badge.svg?eval=40333&live=1" alt="Papers with Code: #2 on CIRCO"></a>
+  <a href="https://paperswithcode.co/api/v1/papers/2505.20764/leaderboard-badge-link?eval=38670"><img src="https://paperswithcode.co/api/v1/papers/2505.20764/leaderboard-badge.svg?eval=38670&live=1" alt="Papers with Code: #2 on CIRR"></a>
+</p>
+
+<p align="center">
   <a href="https://arxiv.org/abs/2505.20764">Paper</a> |
   <a href="https://ericx003.github.io/proj/context_cir/">Project Page</a> |
   <a href="#-citation">Citation</a>
